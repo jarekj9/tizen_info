@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<widget xmlns="http://www.w3.org/ns/widgets" xmlns:tizen="http://tizen.org/ns/widgets" id="http://yourdomain/JJinfo" version="1.0.0" viewmodes="maximized">
+    <access origin="https://www.tizen.org" subdomains="true"></access>
+    <tizen:app-widget id="AHEoORjcl3.JJinfo.JJinfoWidget" primary="true">
+        <tizen:widget-label>JJinfo widget</tizen:widget-label>
+        <tizen:widget-content src="widget/JJinfoWidget/index.html">
+            <tizen:widget-size preview="widget/JJinfoWidget/preview.png">2x2</tizen:widget-size>
+        </tizen:widget-content>
+    </tizen:app-widget>
+    <tizen:application id="AHEoORjcl3.JJinfo" package="AHEoORjcl3" required_version="2.3"/>
+    <content src="index.html"/>
+    <feature name="http://tizen.org/feature/screen.size.all"/>
+    <feature name="http://tizen.org/feature/input.rotating_bezel"/>
+    <icon src="icon.png"/>
+    <name>JJinfo</name>
+    <tizen:privilege name="http://tizen.org/privilege/internet"/>
+    <tizen:profile name="wearable"/>
+    <tizen:setting background-support="disable" encryption="disable" hwkey-event="enable"/>&quot;widget/NewsFeedWidget/js/data.js&quot;
+    </widget>
