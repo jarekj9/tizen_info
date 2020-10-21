@@ -1,13 +1,12 @@
 
 (function() {
-    var XML_METHOD = "GET",
-        MSG_ERR_NODATA = "There is no data",
-        MSG_ERR_NOTCONNECTED = "Connection aborted. Check your internet connection.",
+    var MSG_ERR_NODATA = "There is no data",
+        MSG_ERR_NOTCONNECTED = "Connection failed.",
         NUM_MAX_NEWS = 100,
-        NUM_MAX_LENGTH_SUBJECT = 9999,
-        arrayNews = [],
-        indexDisplay = 0,
-        lengthNews = 0;
+        NUM_MAX_LENGTH_SUBJECT = 9999;
+    indexDisplay = 0;
+    arrayNews = [];
+    lengthNews = 0;
     
     /**
      * Removes all child of the element.
@@ -19,7 +18,6 @@
         while (elm.firstChild) {
             elm.removeChild(elm.firstChild);
         }
-
         return elm;
     }
 
@@ -75,8 +73,8 @@
      * @param {number} index - The index of the news to be displayed
      */
     function showNews(index) {
-        var objNews = document.querySelector("#area-news"),
-            objPagenum = document.querySelector("#area-pagenum");
+        var objPagenum = document.querySelector("#area-pagenum");
+        var objNews = document.querySelector("#area-news");
 
         emptyElement(objNews);
         objNews.innerHTML = arrayNews[index].title;
@@ -107,54 +105,51 @@
 
     /**
      * Reads data from internet by XMLHttpRequest, and store received data to the local array.
-     * @private
      */
-    function getDataFromXML() {
-    	
-    	xmlhttp = new XMLHttpRequest();
-    	
-        var objNews = document.querySelector("#area-news"),
-            xmlhttp,
-            xmlDoc,
-            dataItem,
-            i;
+    function getDataFromXML(url) {
+        var xmlDoc,
+            i,
+            xhr = new XMLHttpRequest(),
+            connectionInfo = document.getElementById("connectionInfo"),
+            dataItem = null,
+            objNews = document.querySelector("#area-news");
 
-        arrayNews = [];
-        lengthNews = 0;
-        indexDisplay = 0;
+        connectionInfo.textContent = 'Connecting...';
         emptyElement(objNews);
+        
+        xhr.open('GET', url, true, HTTP_USER, HTTP_PASSWORD);
+        xhr.onreadystatechange = function() {
+            if (this.readyState == 4) {
+                if (this.status == 200) {
+                    connectionInfo.textContent = 'Connection ok';
+                    xmlDoc = xhr.responseXML;
+                    dataItem = xmlDoc.getElementsByTagName("item");
 
-        xmlhttp.open(XML_METHOD, XML_ADDRESS_EXTERNAL, false, HTTP_USER, HTTP_PASSWORD);
-        xmlhttp.onreadystatechange = function() {
-            if (xmlhttp.readyState === 4 && xmlhttp.status === 200) {
-                xmlDoc = xmlhttp.responseXML;
-                dataItem = xmlDoc.getElementsByTagName("item");
-
-                if (dataItem.length > 0) {
-                    lengthNews = (dataItem.length > NUM_MAX_NEWS) ? NUM_MAX_NEWS : dataItem.length;
-                    for (i = 0; i < lengthNews; i++) {
-                        arrayNews.push({
-                            title: dataItem[i].getElementsByTagName("title")[0].childNodes[0].nodeValue,
-                        });
-                        arrayNews[i].title = trimText(arrayNews[i].title, NUM_MAX_LENGTH_SUBJECT);
+                    if (dataItem.length > 0) {
+                        
+                        lengthNews = (dataItem.length > NUM_MAX_NEWS) ? NUM_MAX_NEWS : dataItem.length;
+                        for (i = 0; i < lengthNews; i++) {
+                            arrayNews.push({
+                                title: dataItem[i].getElementsByTagName("title")[0].childNodes[0].nodeValue,
+                            });
+                            arrayNews[i].title = trimText(arrayNews[i].title, NUM_MAX_LENGTH_SUBJECT);
+                        }
+                        showNews(indexDisplay);
+                    } 
+                    else {
+                        addTextElement(objNews, "subject", MSG_ERR_NODATA);
                     }
-                    
-                    //arrayNews.push({title: 'test1</br>test2</br>test3'}); //add news manually and increase length by 1
-                    //lengthNews += 1;
-                    showNews(indexDisplay);
-                } else {
-                    addTextElement(objNews, "subject", MSG_ERR_NODATA);
                 }
-                
-                
-
-                xmlhttp = null;
-            } else {
-                addTextElement(objNews, "subject", MSG_ERR_NOTCONNECTED);
-            }
-        };
-
-        xmlhttp.send();
+                else {
+                    objNews.textContent += 'Server did not respond...';
+                    if (url == XML_ADDRESS_INTERNAL) {
+                        return true;
+                    }
+                    getDataFromXML(XML_ADDRESS_INTERNAL);
+                }
+            } 
+        }
+        xhr.send();
     }
 
  
@@ -164,10 +159,10 @@
      */
     function setDefaultEvents() {
     	document.getElementById('main').setAttribute('tizen-circular-scrollbar', ''); //round scroll bar instead od vertical
-    	
         document.addEventListener("tizenhwkey", keyEventHandler);
-        document.querySelector("#area-news").addEventListener("click", showNextNews);
-        document.querySelector("#area-title").addEventListener("click", showPrevNews);
+        document.querySelector("#header").addEventListener("click", init);
+        document.querySelector("#nextControlOverlap").addEventListener("click", showNextNews);
+        document.querySelector("#previousControlOverlap").addEventListener("click", showPrevNews);
         document.addEventListener('rotarydetent', rotaryDetentHandler);
     }
     
@@ -192,7 +187,7 @@
      */
     function init() {
     	setDefaultEvents();
-    	getDataFromXML(); 
+    	getDataFromXML(XML_ADDRESS_EXTERNAL); 
     }
 
     window.onload = init;

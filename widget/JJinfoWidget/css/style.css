@@ -4,6 +4,9 @@ body {
     height: 100%;
     margin: 0 auto;
     padding: 0;
+    text-align: center;
+    vertical-align: middle;
+    font-size: 18px;
 }
 
 .container {
@@ -49,15 +52,6 @@ body {
     vertical-align: middle;
 }
 
-#area-news {
-    width: 100%;
-    display: table-cell;
-    text-align: center;
-    vertical-align: middle;
-    overflow-y: auto;
-    font-size: 30px;
-}
-
 #area-pagenum {
     width: 100%;
     display: table-cell;
@@ -88,4 +82,13 @@ body {
     padding: 0;
     font-size: 1.6em;
     color: #ffffff;
+}
+
+.info {
+    width: 100%;
+    display: table-row;
+    text-align: center;
+    vertical-align: middle;
+    overflow-y: auto;
+    font-size: 30px;
 }

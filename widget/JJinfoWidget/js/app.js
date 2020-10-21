@@ -1,16 +1,5 @@
 
 (function() {
-	
-    /**
-     * Launches the world clock application
-     * @private
-     */
-    function launchApp(){
-        var app = window.tizen.application.getCurrentApplication();
-        var appId = app.appInfo.id.substring(0, (app.appInfo.id.lastIndexOf('.')) );
-        window.tizen.application.launch(appId);
-    }
-
     /**
      * Handles the back key event
      * @private
@@ -23,45 +12,38 @@
         }
     }
 
-    function getDataFromNetwork(file, handler) {
+    function getDataFromNetwork(url) {
         var xhr = new XMLHttpRequest();
-        
-        xhr.open('GET', file, true, HTTP_USER, HTTP_PASSWORD);
-        //xhr.open('GET', file, true);
-        xhr.onreadystatechange = handler;
-        xhr.onload = function() {
-            if (this.status == 200) {
-                /* Handle the response */
-            }
-        };
-        xhr.send();
-    }
-    
-    /* If getting Text data */
-    function handleResponseTEXT(e) {
-        if (e.target.readyState == 4) {
-            if (e.target.status == 200) {
-                var contents = document.getElementById("area-news");
-                contents.textContent = e.target.responseText;
-            } else {
-                /* Error handling */
-            }
+        var contents = document.getElementById("mainInfo");
+        var connectionInfo = document.getElementById("connectionInfo");
+        connectionInfo.textContent = 'Connecting...';
+        xhr.open('GET', url, true, HTTP_USER, HTTP_PASSWORD);
+        xhr.onreadystatechange = function() {
+            if (this.readyState == 4) {
+                if (this.status == 200) {
+                	connectionInfo.textContent = 'Connection ok';
+                    contents.textContent = 'LIST: ' + this.responseText;
+                }
+                else {
+                    contents.textContent += 'Server did not respond...';
+                    if (url == XML_ADDRESS_INTERNAL) {
+                        return true;
+                    }
+                    getDataFromNetwork(XML_ADDRESS_INTERNAL);
+                }
+            }  
         }
-    }
+        xhr.send();
+    };
 
     /**
      * Initializes the application
      * @private
      */
     function init() {
-        
-        //getDataFromNetwork('http://192.168.31.27/infoJJ_testJJinfo_widget.txt', handleResponseTEXT);
-        getDataFromNetwork(XML_ADDRESS_EXTERNAL, handleResponseTEXT);
-        document.getElementById('area-news').addEventListener('click', init);
-
-        pageNoList.addEventListener('click', launchApp);
-        document.getElementById('city-toggle').addEventListener('click', toggle);
-        window.addEventListener('tizenhwkey', keyEventHandler);
+        var contents = document.getElementById("mainInfo");
+        getDataFromNetwork(XML_ADDRESS_EXTERNAL);
+        document.getElementById('header').addEventListener('click', init);
     }
 
     window.onload = init();

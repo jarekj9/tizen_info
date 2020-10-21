@@ -30,8 +30,8 @@ body {
     display: table;
     text-align: center;
     margin: auto;
-    margin-top: 30px;
-    margin-bottom: 30px;
+    margin-top: 5px;
+    margin-bottom: 10px;
 }
 
 #footer {
@@ -88,4 +88,68 @@ body {
     padding: 0;
     font-size: 1.6em;
     color: #ffffff;
+}
+#previousControl {
+    width:40%;
+    height:60px;
+    background-color:#383838;
+    float:left;
+    font-size:54px;
+    font-weight:bold;
+}
+#nextControl {
+    width:40%;
+    height:60px;
+    background-color:#383838;
+    float:right;
+    font-size:54px;
+    font-weight:bold;
+}
+#nextControlOverlap {
+    position: absolute;
+    z-index: 2;
+    width:45%;
+    height:80%;
+    right: 0px;
+    background-color:#383838;
+    opacity: 0;
+    font-size:54px;
+    font-weight:bold;
+}
+#previousControlOverlap {
+    position: absolute;
+    z-index: 2;
+    width:45%;
+    height:80%;
+    left: 0px;
+    background-color:#383838;
+    opacity: 0;
+    font-size:54px;
+    font-weight:bold;
+}
+#previousBorderControlSign {
+    position: absolute;
+    z-index: 1;
+    width:7%;
+    height:100%;
+    background-color:#000;
+    left: 0px;
+    font-size:54px;
+    font-weight:bold;
+    justify-content: center;
+    align-items: center;
+    display: flex;
+}
+#nextBorderControlSign {
+    position: absolute;
+    z-index: 1;
+    width:7%;
+    height:100%;
+    background-color:#000;
+    right: 0px;
+    font-size:54px;
+    font-weight:bold;
+    justify-content: center;
+    align-items: center;
+    display: flex;
 }
