@@ -89,26 +89,10 @@ body {
     font-size: 1.6em;
     color: #ffffff;
 }
-#previousControl {
-    width:40%;
-    height:60px;
-    background-color:#383838;
-    float:left;
-    font-size:54px;
-    font-weight:bold;
-}
-#nextControl {
-    width:40%;
-    height:60px;
-    background-color:#383838;
-    float:right;
-    font-size:54px;
-    font-weight:bold;
-}
 #nextControlOverlap {
     position: absolute;
     z-index: 2;
-    width:45%;
+    width:30%;
     height:80%;
     right: 0px;
     background-color:#383838;
@@ -119,7 +103,7 @@ body {
 #previousControlOverlap {
     position: absolute;
     z-index: 2;
-    width:45%;
+    width:30%;
     height:80%;
     left: 0px;
     background-color:#383838;
@@ -134,6 +118,7 @@ body {
     height:100%;
     background-color:#000;
     left: 0px;
+    opacity: 0.2;
     font-size:54px;
     font-weight:bold;
     justify-content: center;
@@ -147,6 +132,7 @@ body {
     height:100%;
     background-color:#000;
     right: 0px;
+    opacity: 0.2;
     font-size:54px;
     font-weight:bold;
     justify-content: center;

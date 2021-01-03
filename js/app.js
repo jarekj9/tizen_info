@@ -4,9 +4,9 @@
         MSG_ERR_NOTCONNECTED = "Connection failed.",
         NUM_MAX_NEWS = 100,
         NUM_MAX_LENGTH_SUBJECT = 9999;
-    indexDisplay = 0;
-    arrayNews = [];
-    lengthNews = 0;
+        indexDisplay = 0,
+        arrayNews = [],
+        lengthNews = 0;
     
     /**
      * Removes all child of the element.
@@ -86,7 +86,7 @@
      * Displays a news of the next index.
      * @private
      */
-    function showNextNews() {
+    function showNextPage() {
         if (indexDisplay+1 < lengthNews > 0) {
             indexDisplay += 1;
             showNews(indexDisplay);
@@ -96,7 +96,7 @@
      * Displays a news of the previous index.
      * @private
      */
-    function showPrevNews() {
+    function showPrevPage() {
         if (indexDisplay > 0 && lengthNews > 0) {
             indexDisplay -= 1;
             showNews(indexDisplay);
@@ -114,39 +114,40 @@
             dataItem = null,
             objNews = document.querySelector("#area-news");
 
+        arrayNews = [];
         connectionInfo.textContent = 'Connecting...';
         emptyElement(objNews);
-        
+        console.log(arrayNews);
         xhr.open('GET', url, true, HTTP_USER, HTTP_PASSWORD);
         xhr.onreadystatechange = function() {
             if (this.readyState == 4) {
-                if (this.status == 200) {
-                    connectionInfo.textContent = 'Connection ok';
-                    xmlDoc = xhr.responseXML;
-                    dataItem = xmlDoc.getElementsByTagName("item");
-
-                    if (dataItem.length > 0) {
-                        
-                        lengthNews = (dataItem.length > NUM_MAX_NEWS) ? NUM_MAX_NEWS : dataItem.length;
-                        for (i = 0; i < lengthNews; i++) {
-                            arrayNews.push({
-                                title: dataItem[i].getElementsByTagName("title")[0].childNodes[0].nodeValue,
-                            });
-                            arrayNews[i].title = trimText(arrayNews[i].title, NUM_MAX_LENGTH_SUBJECT);
-                        }
-                        showNews(indexDisplay);
-                    } 
-                    else {
-                        addTextElement(objNews, "subject", MSG_ERR_NODATA);
-                    }
-                }
-                else {
+    
+                if (this.status != 200) {
                     objNews.textContent += 'Server did not respond...';
                     if (url == XML_ADDRESS_INTERNAL) {
                         return true;
                     }
                     getDataFromXML(XML_ADDRESS_INTERNAL);
                 }
+                connectionInfo.textContent = 'Connection ok';
+                xmlDoc = xhr.responseXML;
+                dataItem = xmlDoc.getElementsByTagName("item");
+                console.log(arrayNews);
+                if (dataItem.length > 0) {
+                    
+                    lengthNews = (dataItem.length > NUM_MAX_NEWS) ? NUM_MAX_NEWS : dataItem.length;
+                    for (i = 0; i < lengthNews; i++) {
+                        arrayNews.push({
+                            title: dataItem[i].getElementsByTagName("title")[0].childNodes[0].nodeValue,
+                        });
+                        arrayNews[i].title = trimText(arrayNews[i].title, NUM_MAX_LENGTH_SUBJECT);
+                    }
+                    showNews(indexDisplay);
+                } 
+                else {
+                    addTextElement(objNews, "subject", MSG_ERR_NODATA);
+                }
+
             } 
         }
         xhr.send();
@@ -161,8 +162,8 @@
     	document.getElementById('main').setAttribute('tizen-circular-scrollbar', ''); //round scroll bar instead od vertical
         document.addEventListener("tizenhwkey", keyEventHandler);
         document.querySelector("#header").addEventListener("click", init);
-        document.querySelector("#nextControlOverlap").addEventListener("click", showNextNews);
-        document.querySelector("#previousControlOverlap").addEventListener("click", showPrevNews);
+        document.querySelector("#nextControlOverlap").addEventListener("click", showNextPage);
+        document.querySelector("#previousControlOverlap").addEventListener("click", showPrevPage);
         document.addEventListener('rotarydetent', rotaryDetentHandler);
     }
     
