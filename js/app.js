@@ -123,7 +123,7 @@
             if (this.readyState == 4) {
     
                 if (this.status != 200) {
-                    objNews.textContent += 'Server did not respond...';
+                    objNews.textContent += 'Connection Error: ' + this.status + '. ';
                     if (url == XML_ADDRESS_INTERNAL) {
                         return true;
                     }

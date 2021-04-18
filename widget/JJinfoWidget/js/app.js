@@ -26,40 +26,20 @@
         xhr.open('GET', url, true, HTTP_USER, HTTP_PASSWORD);
         xhr.onreadystatechange = function() {
             if (this.readyState == 4) {
-                
                 if (this.status != 200) {
-                    contents.textContent += 'Server did not respond...';
+                	connectionInfo.textContent = 'Connection broken';
+                    contents.textContent += 'Connection Error: ' + this.status + '. ';
                     if (url == XML_ADDRESS_INTERNAL) {
                         return true;
                     }
                     getDataFromNetwork(XML_ADDRESS_INTERNAL);
                 }
-
                 connectionInfo.textContent = 'Connection ok';
                 var jsonData = JSON.parse(this.responseText);
-                //var pageArray = [];
-
                 parseJson(jsonData);
                 showPage(defaultIndex);
-
-                // Object.keys(jsonData).forEach(function(item) {
-                //     var obj = {};
-                //     obj[item] = jsonData[item];
-                //     pageArray.push(obj);
-                //     if (item == 'zakupy') {
-                //         defaultIndex = 1;
-                //     }
-                // });
-
-                // contents.textContent = pageArray[0]['zakupy'];
-                        
-
-
-                    //contents.textContent = 'LIST: ' + this.responseText;
-                
-
             }  
-        }
+        };
         xhr.send();
     };
 
@@ -111,11 +91,17 @@
         category.textContent = key+':';
         contents.textContent = pageArray[index][key].join(', ');
     }
+  
+    function openApp() { 	
+    	tizen.application.launch("AHEoORjcl3.JJinfo");
+    }
 
     function setDefaultEvents() {
         document.getElementById("nextControlOverlap").addEventListener("click", showNextPage);
         document.getElementById("previousControlOverlap").addEventListener("click", showPrevPage);
         document.getElementById('header').addEventListener('click', init);
+        //document.getElementById('header').addEventListener('contents', init);
+        document.querySelector("#contents").addEventListener("click", openApp);
     }
 
     /**
