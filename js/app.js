@@ -1,12 +1,12 @@
-
+// APP
 (function() {
-    var MSG_ERR_NODATA = "There is no data",
-        MSG_ERR_NOTCONNECTED = "Connection failed.",
-        NUM_MAX_NEWS = 100,
-        NUM_MAX_LENGTH_SUBJECT = 9999;
-        indexDisplay = 0,
-        arrayNews = [],
-        lengthNews = 0;
+    var indexDisplay = 0,
+        selectedIndex = 0,
+        arrayInfo = [],
+        listjjJson = [],
+        zakupy = [],
+        lengthNews = 0,
+        lengthZakupy = 0;
     
     /**
      * Removes all child of the element.
@@ -77,7 +77,39 @@
         var objNews = document.querySelector("#area-news");
 
         emptyElement(objNews);
-        objNews.innerHTML = arrayNews[index].title;
+        var infoObj = arrayInfo[index];
+        var infoTitle = Object.keys(infoObj);
+        
+        if (infoTitle == 'listjj_json') {  // special treatment for zakupy
+            objNews.innerHTML = 'listjj....';
+            listjjJson = arrayInfo[index][infoTitle];
+            zakupy = [];
+            for (i = 0; i < listjjJson.length; i++) {
+                if (listjjJson[i].category == 'zakupy') {
+                    listjjJson[i].selected = false;
+                    zakupy.push(listjjJson[i]);
+                }
+            }
+            lengthZakupy = zakupy.length;
+            if(lengthZakupy == 0) {
+                objNews.innerHTML = 'Empty';
+            }
+            else {
+                zakupy[selectedIndex].selected = true;
+                zakupyHtml = '';
+                for (i = 0; i < lengthZakupy; i++) {
+                    if (i == selectedIndex) {
+                        zakupyHtml += '> ';
+                    }
+                    zakupyHtml += '<font size=5>' + zakupy[i].description + '</font><br />';
+                }
+                objNews.innerHTML = zakupyHtml;
+            }
+        }
+        else {
+            objNews.innerHTML = arrayInfo[index][infoTitle];
+        }
+
         emptyElement(objPagenum);
         addTextElement(objPagenum, "pagenum", "Page " + (index + 1) + "/" + lengthNews);
     }
@@ -104,54 +136,84 @@
     }
 
     /**
-     * Reads data from internet by XMLHttpRequest, and store received data to the local array.
+     * On zakupy list change selected item
+     * @private
      */
-    function getDataFromXML(url) {
-        var xmlDoc,
-            i,
-            xhr = new XMLHttpRequest(),
-            connectionInfo = document.getElementById("connectionInfo"),
-            dataItem = null,
-            objNews = document.querySelector("#area-news");
+     function changeSelected() {
+        selectedIndex += 1;
+        if (selectedIndex >= lengthZakupy) {
+            selectedIndex = 0;
+        }
+        showNews(indexDisplay);
+    }
 
-        arrayNews = [];
+
+    /**
+     * Send POST request to delete selected item
+     */
+     function deleteSelected() {
+        if (lengthZakupy == 0) {
+            return;
+        }
+        var connectionInfo = document.getElementById("connectionInfo");
+        var selectedId = zakupy[selectedIndex]["id"];
+        var url = 'https://192.168.31.26:8086/api/Listjj/DelItem';
+        var xhr = new XMLHttpRequest();
+
+        xhr.open('POST', url, true);
+        xhr.setRequestHeader('Authorization', 'ApiKey e5c68304-8374-47f6-b334-1e24fdba4ec7');
+        xhr.onreadystatechange = function() {
+            if (this.readyState == 4) {
+                if (this.status != 200) {
+                    connectionInfo.textContent = 'Problem...';
+                    return true;
+                }
+                connectionInfo.textContent = this.responseText;
+            }
+            if (this.responseText == "Deleted." || this.responseText == "Item not found.") {  // remove from downloaded list for quick screen update
+                for (i = 0; i < listjjJson.length; i++) { 
+                    if (listjjJson[i].id == selectedId) {
+                        listjjJson.splice(i, 1);
+                    }
+                }
+                selectedIndex = 0;
+                showNews(indexDisplay);
+            }
+        }
+        xhr.send(JSON.stringify({id: selectedId}));
+     }
+
+    function getDataFromJson(url) {
+        arrayInfo = [];
+        var xhr = new XMLHttpRequest();
+        var connectionInfo = document.getElementById("connectionInfo");
         connectionInfo.textContent = 'Connecting...';
-        emptyElement(objNews);
-        console.log(arrayNews);
         xhr.open('GET', url, true, HTTP_USER, HTTP_PASSWORD);
         xhr.onreadystatechange = function() {
             if (this.readyState == 4) {
-    
+                
                 if (this.status != 200) {
-                    objNews.textContent += 'Connection Error: ' + this.status + '. ';
-                    if (url == XML_ADDRESS_INTERNAL) {
+                    if (url == JSON_ADDRESS_INTERNAL) {
                         return true;
                     }
-                    getDataFromXML(XML_ADDRESS_INTERNAL);
-                }
-                connectionInfo.textContent = 'Connection ok';
-                xmlDoc = xhr.responseXML;
-                dataItem = xmlDoc.getElementsByTagName("item");
-                console.log(arrayNews);
-                if (dataItem.length > 0) {
-                    
-                    lengthNews = (dataItem.length > NUM_MAX_NEWS) ? NUM_MAX_NEWS : dataItem.length;
-                    for (i = 0; i < lengthNews; i++) {
-                        arrayNews.push({
-                            title: dataItem[i].getElementsByTagName("title")[0].childNodes[0].nodeValue,
-                        });
-                        arrayNews[i].title = trimText(arrayNews[i].title, NUM_MAX_LENGTH_SUBJECT);
-                    }
-                    showNews(indexDisplay);
-                } 
-                else {
-                    addTextElement(objNews, "subject", MSG_ERR_NODATA);
+                    connectionInfo.textContent = '1st conn failed, Using other address';
+                    getDataFromJson(JSON_ADDRESS_INTERNAL);
+                    return true;
                 }
 
-            } 
+                connectionInfo.textContent = 'Connection ok';
+                
+                var jsonArray = JSON.parse(this.responseText);
+                arrayInfo.push({mitempjj_html: jsonArray['mitempjj_html']});
+                arrayInfo.push({listjj_json: jsonArray['listjj_json']});
+                arrayInfo.push({news_html: jsonArray['news_html']});
+                arrayInfo.push({data_and_uptime: jsonArray['data_and_uptime']});
+                lengthNews = arrayInfo.length
+                showNews(indexDisplay);
+            }
         }
         xhr.send();
-    }
+    };
 
  
     /**
@@ -164,6 +226,8 @@
         document.querySelector("#header").addEventListener("click", init);
         document.querySelector("#nextControlOverlap").addEventListener("click", showNextPage);
         document.querySelector("#previousControlOverlap").addEventListener("click", showPrevPage);
+        document.querySelector("#changeSelectedOverlap").addEventListener("click", changeSelected);
+        document.querySelector("#footer").addEventListener("click", deleteSelected);
         document.addEventListener('rotarydetent', rotaryDetentHandler);
     }
     
@@ -188,7 +252,7 @@
      */
     function init() {
     	setDefaultEvents();
-    	getDataFromXML(XML_ADDRESS_EXTERNAL); 
+        getDataFromJson(JSON_ADDRESS_EXTERNAL);
     }
 
     window.onload = init;

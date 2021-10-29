@@ -1,10 +1,11 @@
-
+// WIDGET
 (function() {
     var indexDisplay = 0,
         defaultIndex = 0,
-        defaultCategory = 'zakupy',
         nrOfPages = 0,
-        pageArray = [];
+        defaultCategory = "zakupy",
+        listjjJson = [],
+        categories = [];
 
 
     /**
@@ -29,36 +30,19 @@
                 if (this.status != 200) {
                 	connectionInfo.textContent = 'Connection broken';
                     contents.textContent += 'Connection Error: ' + this.status + '. ';
-                    if (url == XML_ADDRESS_INTERNAL) {
+                    if (url == JSON_ADDRESS_INTERNAL) {
                         return true;
                     }
-                    getDataFromNetwork(XML_ADDRESS_INTERNAL);
+                    getDataFromNetwork(JSON_ADDRESS_INTERNAL);
                 }
                 connectionInfo.textContent = 'Connection ok';
                 var jsonData = JSON.parse(this.responseText);
-                parseJson(jsonData);
+                parseJson(jsonData['listjj_json']);
                 showPage(defaultIndex);
             }  
         };
         xhr.send();
     };
-
-
-    function jsonToArrayOfObjects(jsonData) {
-        pageArray = [];
-        var i = 0;
-        Object.keys(jsonData).forEach(function(item) {
-            var obj = {};
-            obj[item] = jsonData[item];
-            pageArray.push(obj);
-            if (item == defaultCategory) {
-                defaultIndex = i;
-            }
-            i++;
-        });
-        return pageArray;
-    }
-
 
     /**
      * Displays a page of the next index.
@@ -80,16 +64,30 @@
     }
 
     function parseJson(jsonData) {
-        arrayData = jsonToArrayOfObjects(jsonData);
-        nrOfPages = arrayData.length;
+        categories = [];
+        for(var x=0; x<jsonData.length; x++) {
+            if(!categories.includes(jsonData[x].category)) {
+                categories.push(jsonData[x].category);
+            }
+        }
+        console.log(categories);
+        nrOfPages = categories.length;
+        listjjJson = jsonData;
+        defaultIndex = categories.indexOf(defaultCategory);
     }
 
     function showPage(index) {
         var category = document.getElementById("category");
         var contents = document.getElementById("mainInfo");
-        var key = Object.keys(pageArray[index])[0];
-        category.textContent = key+':';
-        contents.textContent = pageArray[index][key].join(', ');
+        category.textContent = categories[index];
+        var currentContent = "";
+        for(var x=0; x<listjjJson.length; x++) {
+            if (listjjJson[x].category == categories[index]) {
+                currentContent += listjjJson[x].description + ", ";
+            }
+        }
+        currentContent = currentContent.slice(0, -2); 
+        contents.innerHTML = currentContent;
     }
   
     function openApp() { 	
@@ -109,7 +107,7 @@
      */
     function init() {
         var contents = document.getElementById("mainInfo");
-        getDataFromNetwork(XML_ADDRESS_EXTERNAL);
+        getDataFromNetwork(JSON_ADDRESS_EXTERNAL);
         setDefaultEvents();
     }
 
