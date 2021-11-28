@@ -148,16 +148,18 @@
     }
 
 
+     function deleteHandler() {
+    	 deleteSelected(LISTJJ_ADDRESS_INTERNAL);
+     }
     /**
      * Send POST request to delete selected item
      */
-     function deleteSelected() {
+     function deleteSelected(url) {
         if (lengthZakupy == 0) {
             return;
         }
         var connectionInfo = document.getElementById("connectionInfo");
         var selectedId = zakupy[selectedIndex]["id"];
-        var url = 'https://192.168.31.26:8086/api/Listjj/DelItem';
         var xhr = new XMLHttpRequest();
 
         xhr.open('POST', url, true);
@@ -165,7 +167,12 @@
         xhr.onreadystatechange = function() {
             if (this.readyState == 4) {
                 if (this.status != 200) {
-                    connectionInfo.textContent = 'Problem...';
+                    if (url == LISTJJ_ADDRESS_EXTERNAL) {
+                    	connectionInfo.textContent = 'Problem...';
+                        return true;
+                    }
+                    connectionInfo.textContent = '1st conn failed, Using other address';
+                    getDataFromJson(LISTJJ_ADDRESS_EXTERNAL);
                     return true;
                 }
                 connectionInfo.textContent = this.responseText;
@@ -194,6 +201,7 @@
                 
                 if (this.status != 200) {
                     if (url == JSON_ADDRESS_INTERNAL) {
+                    	connectionInfo.textContent = 'Problem...';
                         return true;
                     }
                     connectionInfo.textContent = '1st conn failed, Using other address';
@@ -227,7 +235,7 @@
         document.querySelector("#nextControlOverlap").addEventListener("click", showNextPage);
         document.querySelector("#previousControlOverlap").addEventListener("click", showPrevPage);
         document.querySelector("#changeSelectedOverlap").addEventListener("click", changeSelected);
-        document.querySelector("#footer").addEventListener("click", deleteSelected);
+        document.querySelector("#footer").addEventListener("click", deleteHandler);
         document.addEventListener('rotarydetent', rotaryDetentHandler);
     }
     

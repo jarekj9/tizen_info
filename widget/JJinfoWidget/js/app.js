@@ -27,7 +27,7 @@
         xhr.open('GET', url, true, HTTP_USER, HTTP_PASSWORD);
         xhr.onreadystatechange = function() {
             if (this.readyState == 4) {
-                if (this.status != 200) {
+                if (this.status != 200) {         // this never happens since some time
                 	connectionInfo.textContent = 'Connection broken';
                     contents.textContent += 'Connection Error: ' + this.status + '. ';
                     if (url == JSON_ADDRESS_INTERNAL) {
@@ -35,7 +35,13 @@
                     }
                     getDataFromNetwork(JSON_ADDRESS_INTERNAL);
                 }
-                connectionInfo.textContent = 'Connection ok';
+                if (this.responseText == "") {  // On external address I get empty response instead of status != 200, not sure why
+                	connectionInfo.textContent = 'Empty response text';
+                	getDataFromNetwork(JSON_ADDRESS_INTERNAL);
+                }
+                else {
+                	connectionInfo.textContent = 'Connection ok';
+                }
                 var jsonData = JSON.parse(this.responseText);
                 parseJson(jsonData['listjj_json']);
                 showPage(defaultIndex);
