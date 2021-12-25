@@ -18,6 +18,36 @@
             } catch (ignore) {}
         }
     }
+    function getDataFromNetwork2(url) {
+        var xhr = new XMLHttpRequest();
+        var contents = document.getElementById("mainInfo");
+        var connectionInfo = document.getElementById("connectionInfo");
+        connectionInfo.textContent = 'Connecting...';
+        xhr.open('GET', url, true);
+        xhr.onreadystatechange = function() {
+            if (this.readyState == 4) {
+                if (this.status != 200) {         // this never happens since some time
+                	connectionInfo.textContent = 'Connection broken';
+                    contents.textContent += 'Connection Error: ' + this.status + '. ';
+                    //if (url == JSON_ADDRESS_EXTERNAL2) {
+                    //    return true;
+                    //}
+                    //getDataFromNetwork(JSON_ADDRESS_EXTERNAL2);
+                }
+                if (this.responseText == "") {  // On external address I get empty response instead of status != 200, not sure why
+                	connectionInfo.textContent = 'Empty response text';
+                	getDataFromNetwork(JSON_ADDRESS_INTERNAL2);
+                }
+                else {
+                	connectionInfo.textContent = 'Connection ok';
+                }
+                var jsonData = JSON.parse(this.responseText);
+                parseJson(jsonData['Description']['listjj_json']);
+                showPage(defaultIndex);
+            }  
+        };
+        xhr.send();
+    };
 
     function getDataFromNetwork(url) {
         var xhr = new XMLHttpRequest();
@@ -113,7 +143,8 @@
      */
     function init() {
         var contents = document.getElementById("mainInfo");
-        getDataFromNetwork(JSON_ADDRESS_EXTERNAL);
+        //getDataFromNetwork(JSON_ADDRESS_EXTERNAL);
+        getDataFromNetwork2(JSON_ADDRESS_EXTERNAL2);
         setDefaultEvents();
     }
 

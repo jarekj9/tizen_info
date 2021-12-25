@@ -172,7 +172,7 @@
                         return true;
                     }
                     connectionInfo.textContent = '1st conn failed, Using other address';
-                    getDataFromJson(LISTJJ_ADDRESS_EXTERNAL);
+                    deleteSelected(LISTJJ_ADDRESS_EXTERNAL);
                     return true;
                 }
                 connectionInfo.textContent = this.responseText;
@@ -222,6 +222,41 @@
         }
         xhr.send();
     };
+    
+    function getDataFromJson2(url) {
+        arrayInfo = [];
+        var xhr = new XMLHttpRequest();
+        var connectionInfo = document.getElementById("connectionInfo");
+        connectionInfo.textContent = 'Connecting...';
+        xhr.open('GET', url, true);
+        xhr.onreadystatechange = function() {
+            if (this.readyState == 4) {
+                
+                if (this.status != 200) {
+                    if (url == LISTJJ_ADDRESS_INTERNAL_GET) {
+                    	connectionInfo.textContent = 'Problem...';
+                        return true;
+                    }
+                    connectionInfo.textContent = '1st conn failed, Using other address';
+                    getDataFromJson2(LISTJJ_ADDRESS_INTERNAL_GET);
+                    return true;
+                }
+
+                connectionInfo.textContent = 'Connection ok';
+                
+                var jsonArray = JSON.parse(this.responseText);
+                jsonArray = JSON.parse(jsonArray['Description']);
+                console.log(jsonArray);
+                arrayInfo.push({mitempjj_html: jsonArray['mitempjj_html']});
+                arrayInfo.push({listjj_json: jsonArray['listjj_json']});
+                arrayInfo.push({news_html: jsonArray['news_html']});
+                arrayInfo.push({data_and_uptime: jsonArray['data_and_uptime']});
+                lengthNews = arrayInfo.length
+                showNews(indexDisplay);
+            }
+        }
+        xhr.send();
+    };
 
  
     /**
@@ -260,7 +295,8 @@
      */
     function init() {
     	setDefaultEvents();
-        getDataFromJson(JSON_ADDRESS_EXTERNAL);
+        //getDataFromJson(JSON_ADDRESS_EXTERNAL);
+        getDataFromJson2(LISTJJ_ADDRESS_EXTERNAL_GET);
     }
 
     window.onload = init;
