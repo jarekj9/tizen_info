@@ -149,7 +149,7 @@
 
 
      function deleteHandler() {
-    	 deleteSelected(LISTJJ_ADDRESS_INTERNAL);
+    	 deleteSelected(LISTJJ_ADDRESS_INTERNAL_DEL);
      }
     /**
      * Send POST request to delete selected item
@@ -167,12 +167,12 @@
         xhr.onreadystatechange = function() {
             if (this.readyState == 4) {
                 if (this.status != 200) {
-                    if (url == LISTJJ_ADDRESS_EXTERNAL) {
+                    if (url == LISTJJ_ADDRESS_EXTERNAL_DEL) {
                     	connectionInfo.textContent = 'Problem...';
                         return true;
                     }
                     connectionInfo.textContent = '1st conn failed, Using other address';
-                    deleteSelected(LISTJJ_ADDRESS_EXTERNAL);
+                    deleteSelected(LISTJJ_ADDRESS_EXTERNAL_DEL);
                     return true;
                 }
                 connectionInfo.textContent = this.responseText;
@@ -189,41 +189,8 @@
         }
         xhr.send(JSON.stringify({id: selectedId}));
      }
-
-    function getDataFromJson(url) {
-        arrayInfo = [];
-        var xhr = new XMLHttpRequest();
-        var connectionInfo = document.getElementById("connectionInfo");
-        connectionInfo.textContent = 'Connecting...';
-        xhr.open('GET', url, true, HTTP_USER, HTTP_PASSWORD);
-        xhr.onreadystatechange = function() {
-            if (this.readyState == 4) {
-                
-                if (this.status != 200) {
-                    if (url == JSON_ADDRESS_INTERNAL) {
-                    	connectionInfo.textContent = 'Problem...';
-                        return true;
-                    }
-                    connectionInfo.textContent = '1st conn failed, Using other address';
-                    getDataFromJson(JSON_ADDRESS_INTERNAL);
-                    return true;
-                }
-
-                connectionInfo.textContent = 'Connection ok';
-                
-                var jsonArray = JSON.parse(this.responseText);
-                arrayInfo.push({mitempjj_html: jsonArray['mitempjj_html']});
-                arrayInfo.push({listjj_json: jsonArray['listjj_json']});
-                arrayInfo.push({news_html: jsonArray['news_html']});
-                arrayInfo.push({data_and_uptime: jsonArray['data_and_uptime']});
-                lengthNews = arrayInfo.length
-                showNews(indexDisplay);
-            }
-        }
-        xhr.send();
-    };
     
-    function getDataFromJson2(url) {
+    function getDataFromJson(url) {
         arrayInfo = [];
         var xhr = new XMLHttpRequest();
         var connectionInfo = document.getElementById("connectionInfo");
@@ -238,7 +205,7 @@
                         return true;
                     }
                     connectionInfo.textContent = '1st conn failed, Using other address';
-                    getDataFromJson2(LISTJJ_ADDRESS_INTERNAL_GET);
+                    getDataFromJson(LISTJJ_ADDRESS_INTERNAL_GET);
                     return true;
                 }
 
@@ -246,7 +213,6 @@
                 
                 var jsonArray = JSON.parse(this.responseText);
                 jsonArray = JSON.parse(jsonArray['Description']);
-                console.log(jsonArray);
                 arrayInfo.push({mitempjj_html: jsonArray['mitempjj_html']});
                 arrayInfo.push({listjj_json: jsonArray['listjj_json']});
                 arrayInfo.push({news_html: jsonArray['news_html']});
@@ -294,9 +260,10 @@
      * @private
      */
     function init() {
+        var connectionInfo = document.getElementById("connectionInfo");
+        connectionInfo.textContent = '';
     	setDefaultEvents();
-        //getDataFromJson(JSON_ADDRESS_EXTERNAL);
-        getDataFromJson2(LISTJJ_ADDRESS_EXTERNAL_GET);
+        getDataFromJson(LISTJJ_ADDRESS_EXTERNAL_GET);
     }
 
     window.onload = init;

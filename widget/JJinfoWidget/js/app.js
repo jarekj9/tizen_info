@@ -18,65 +18,38 @@
             } catch (ignore) {}
         }
     }
-    function getDataFromNetwork2(url) {
-        var xhr = new XMLHttpRequest();
-        var contents = document.getElementById("mainInfo");
-        var connectionInfo = document.getElementById("connectionInfo");
-        connectionInfo.textContent = 'Connecting...';
-        xhr.open('GET', url, true);
-        xhr.onreadystatechange = function() {
-            if (this.readyState == 4) {
-                if (this.status != 200) {         // this never happens since some time
-                	connectionInfo.textContent = 'Connection broken';
-                    contents.textContent += 'Connection Error: ' + this.status + '. ';
-                    //if (url == JSON_ADDRESS_EXTERNAL2) {
-                    //    return true;
-                    //}
-                    //getDataFromNetwork(JSON_ADDRESS_EXTERNAL2);
-                }
-                if (this.responseText == "") {  // On external address I get empty response instead of status != 200, not sure why
-                	connectionInfo.textContent = 'Empty response text';
-                	getDataFromNetwork(JSON_ADDRESS_INTERNAL2);
-                }
-                else {
-                	connectionInfo.textContent = 'Connection ok';
-                }
-                var jsonData = JSON.parse(this.responseText);
-                parseJson(jsonData['Description']['listjj_json']);
-                showPage(defaultIndex);
-            }  
-        };
-        xhr.send();
-    };
-
     function getDataFromNetwork(url) {
         var xhr = new XMLHttpRequest();
         var contents = document.getElementById("mainInfo");
         var connectionInfo = document.getElementById("connectionInfo");
         connectionInfo.textContent = 'Connecting...';
-        xhr.open('GET', url, true, HTTP_USER, HTTP_PASSWORD);
+        
         xhr.onreadystatechange = function() {
             if (this.readyState == 4) {
                 if (this.status != 200) {         // this never happens since some time
                 	connectionInfo.textContent = 'Connection broken';
-                    contents.textContent += 'Connection Error: ' + this.status + '. ';
+                    contents.textContent += 'Connection Error: ' + this.status + url;
                     if (url == JSON_ADDRESS_INTERNAL) {
                         return true;
                     }
-                    getDataFromNetwork(JSON_ADDRESS_INTERNAL);
+                    getDataFromNetwork2(JSON_ADDRESS_INTERNAL);
+                    return true;
                 }
                 if (this.responseText == "") {  // On external address I get empty response instead of status != 200, not sure why
                 	connectionInfo.textContent = 'Empty response text';
-                	getDataFromNetwork(JSON_ADDRESS_INTERNAL);
+                	return true;
                 }
                 else {
                 	connectionInfo.textContent = 'Connection ok';
-                }
+                
                 var jsonData = JSON.parse(this.responseText);
+                jsonData = JSON.parse(jsonData['Description']);
                 parseJson(jsonData['listjj_json']);
                 showPage(defaultIndex);
+                }
             }  
         };
+        xhr.open('GET', url, true);
         xhr.send();
     };
 
@@ -106,7 +79,6 @@
                 categories.push(jsonData[x].category);
             }
         }
-        console.log(categories);
         nrOfPages = categories.length;
         listjjJson = jsonData;
         defaultIndex = categories.indexOf(defaultCategory);
@@ -134,7 +106,6 @@
         document.getElementById("nextControlOverlap").addEventListener("click", showNextPage);
         document.getElementById("previousControlOverlap").addEventListener("click", showPrevPage);
         document.getElementById('header').addEventListener('click', init);
-        //document.getElementById('header').addEventListener('contents', init);
         document.querySelector("#contents").addEventListener("click", openApp);
     }
 
@@ -142,9 +113,7 @@
      * Initializes the application
      */
     function init() {
-        var contents = document.getElementById("mainInfo");
-        //getDataFromNetwork(JSON_ADDRESS_EXTERNAL);
-        getDataFromNetwork2(JSON_ADDRESS_EXTERNAL2);
+        getDataFromNetwork(JSON_ADDRESS_EXTERNAL);
         setDefaultEvents();
     }
 
