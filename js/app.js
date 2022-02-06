@@ -205,8 +205,7 @@
                         return true;
                     }
                     connectionInfo.textContent = '1st conn failed, Using other address';
-                    getDataFromJson(LISTJJ_ADDRESS_INTERNAL_GET);
-                    return true;
+                    return getDataFromJson(LISTJJ_ADDRESS_INTERNAL_GET);
                 }
 
                 connectionInfo.textContent = 'Connection ok';

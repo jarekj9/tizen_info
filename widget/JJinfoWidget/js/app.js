@@ -32,12 +32,14 @@
                     if (url == JSON_ADDRESS_INTERNAL) {
                         return true;
                     }
-                    getDataFromNetwork2(JSON_ADDRESS_INTERNAL);
-                    return true;
+                    return getDataFromNetwork(JSON_ADDRESS_INTERNAL);
                 }
                 if (this.responseText == "") {  // On external address I get empty response instead of status != 200, not sure why
                 	connectionInfo.textContent = 'Empty response text';
-                	return true;
+                	if (url == JSON_ADDRESS_INTERNAL) {
+                        return true;
+                    }
+                    return getDataFromNetwork(JSON_ADDRESS_INTERNAL);
                 }
                 else {
                 	connectionInfo.textContent = 'Connection ok';
