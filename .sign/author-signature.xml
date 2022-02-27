@@ -49,13 +49,13 @@ mz99NMrDcQ==</DigestValue>
 </Reference>
 <Reference URI="js%2Fapp.js">
 <DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha512"></DigestMethod>
-<DigestValue>Tsy4ujkAjk9ZKSszU/JsVQAi+y2dQjHv4DxhKQY/4O71xfy2Pgrzy3CcWAztZemijvoEdqp8WzZD
-wZCz80qa5Q==</DigestValue>
+<DigestValue>IIst113JpLlEWgai6BG+/mhrV5VV/yyTjEFS4/P6BUhexWfb4PIBf+qDhoxDZq0iaECXWeWF3f5V
+lgC/CHe8hA==</DigestValue>
 </Reference>
 <Reference URI="js%2Fdata.js">
 <DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha512"></DigestMethod>
-<DigestValue>LziAckDSU83UGc3kDnfAEqNxYUF4sB6LABqkgn7uYXKjDfT3qZ8JkEg7JZ47WIYThVnrpOUoB2D6
-wHhJRM0ouA==</DigestValue>
+<DigestValue>HYEieAywDZhaZmZvquKMqAsIlks8hFMykZHHDGqa4uQv30cO3f3gGMWAguaSGfvha1TR1Ly4927V
+aAoFT1L2MA==</DigestValue>
 </Reference>
 <Reference URI="version.txt">
 <DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha512"></DigestMethod>
@@ -254,8 +254,8 @@ DwcQuf18/g==</DigestValue>
 </Reference>
 <Reference URI="widget%2FJJinfoWidget%2Fjs%2Fdata.js">
 <DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha512"></DigestMethod>
-<DigestValue>G4P7X+6M4kJjCtz1RByFyB0jdNqO6x4KLvEc2j2sZNG3zZjd0uaJRAK9V/SD+1I4Jid3ZzXe9d/L
-UtmBj6h+dw==</DigestValue>
+<DigestValue>hvISvHjYlYnlbRCwuYRjiMZFPISxUt2SkskDDVT8x+RfVNkKecUS8mLtleMXew0bA8W1nsFGLfs+
+ggQpgihzNA==</DigestValue>
 </Reference>
 <Reference URI="widget%2FJJinfoWidget%2Fpreview.png">
 <DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha512"></DigestMethod>
@@ -272,11 +272,11 @@ QY10fG1EWQ==</DigestValue>
 </Reference>
 </SignedInfo>
 <SignatureValue>
-grudQ1GkvmFGGv1e9d0DtAicBJ/ZBaBKBzQhjPOMaStjx/j3spdyXGGu01+yNINr7iWn4ddYZ870
-snL0K5IqTBpAfsYP0joqznplIUX6caZRPNIwhgwLx6AUySQfvs8JoxhCjtQ6rDljmnnLBradqMzm
-HAAO8doP4V5CV4TJastjv8/ieZwdEaaZRE5UneTGNl6PonfpQvMFn/6D7kK/0k2DnUGjp2IggUpB
-1pOR3mjBRJmaSAnyiFephUPV8b/n2oluKAtLVbJ4aYp0ppdjWdPiYw1bsCFmSin4ufcDSWISqUpa
-2aOt6XQPcYvSv4BM7A0Cp3lBhyql3HHRyCtuSg==
+cfKtcE8bsqWDFJxYNBi6gZnshgXSir3FCwFSnSlX/mSu7duX2DbREsoP9j0MrWkY8E8Lzo2JgE9C
+iDNdgvfDImsZuNdUQLB1KeSp2anu8ikq2dCZZi2GfQTWHbSsSYbyHeOeOJUhK3eD1f6w7HR0khh6
+O+rXrpZvm5vaTM8Fz5E1Kz0KDHcRA3M8nZPfRgc2iY1Bs/aYJBCpkXTg1AmjhKDUmGq7jrP9eKNE
+jB5DVfSW7N1LEUTw1veAy9Zosn3GrieuQXnr/EQIRMdVRh9wE2/pP1uTx+DCtC7IfpM9VIcyeH+G
+ftWre31l4vtK7wDZf0Or0J1Nfl01ksAzxywZyg==
 </SignatureValue>
 <KeyInfo>
 <X509Data>

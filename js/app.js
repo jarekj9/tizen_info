@@ -163,7 +163,7 @@
         var xhr = new XMLHttpRequest();
 
         xhr.open('POST', url, true);
-        xhr.setRequestHeader('Authorization', 'ApiKey e5c68304-8374-47f6-b334-1e24fdba4ec7');
+        xhr.setRequestHeader('Authorization', 'ApiKey ' + APIKEY);
         xhr.onreadystatechange = function() {
             if (this.readyState == 4) {
                 if (this.status != 200) {
